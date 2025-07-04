@@ -1,0 +1,93 @@
+<!-- src/app/components/profit-loss-table/profit-loss-table.html -->
+<div class="profit-loss-card">
+  <div class="profit-loss-header">
+    <h3 class="profit-loss-title">Profit & Loss</h3>
+    <div class="profit-loss-controls">
+      <!-- ¡NUEVO BOTÓN DESPLEGABLE PARA EL AÑO! -->
+      <div ngbDropdown class="d-inline-block" (openChange)="onYearDropdownOpenChange($event)">
+        <button class="profit-loss-year-selector-button" id="yearDropdown" ngbDropdownToggle>
+          {{ profitLossData?.year }}
+          <fa-icon [icon]="faChevronDown" [class.rotated]="isYearDropdownOpen"></fa-icon>
+        </button>
+        <div ngbDropdownMenu aria-labelledby="yearDropdown">
+          <button ngbDropdownItem *ngFor="let year of availableYears" (click)="onYearChange(year)">
+            {{ year }}
+          </button>
+        </div>
+      </div>
+
+      <!-- BOTÓN CON IMAGEN PARA ALTERNAR LA VISTA (existente) -->
+      <button
+        class="view-toggle-button-img"
+        (click)="toggleView()"
+        [class.active]="isHeatmapView"
+      >
+        <!-- ¡CAMBIO CLAVE AQUÍ! -->
+        <img [src]="isHeatmapView ? '/assets/icons/calor-azul.png' : '/assets/icons/mapa.png'" alt="Alternar vista de mapa de calor" />
+      </button>
+    </div>
+  </div>
+  <div class="profit-loss-table-container">
+    <!-- Vista de Tabla Normal -->
+    <table *ngIf="!isHeatmapView">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th *ngFor="let month of months">{{ month }}</th>
+          <th>Total</th>
+          <th>Var</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of profitLossData?.data" [class.highlighted-row]="isHighlightedRow(entry.concepto)">
+          <td>{{ entry.concepto }}</td>
+          <td *ngFor="let month of months">
+            <ng-container *ngIf="isNumber(entry[month])">
+              {{ formatCurrency(entry[month]!) }} <!-- ¡AÑADE EL '!' AQUÍ! -->
+            </ng-container>
+            <ng-container *ngIf="!isNumber(entry[month])">
+              {{ entry[month] }}
+            </ng-container>
+          </td>
+          <td *ngIf="isNumber(entry['Total'])">{{ formatCurrency(entry['Total']!) }}</td> <!-- ¡AÑADE EL '!' AQUÍ! -->
+          <td *ngIf="!isNumber(entry['Total'])">{{ entry['Total'] }}</td>
+          <td [class]="getVariationClass(entry['Var'])">{{ formatPercentage(entry['Var']) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Vista de Mapa de Calor -->
+    <table *ngIf="isHeatmapView" class="heatmap-table">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th *ngFor="let month of months">{{ month }}</th>
+          <th>Total</th>
+          <th>Var</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of profitLossData?.data" [class.highlighted-row]="isHighlightedRow(entry.concepto)">
+          <td>{{ entry.concepto }}</td>
+          <td *ngFor="let month of months" [style.background-color]="isNumber(entry[month]) ? getHeatmapColor(entry[month]!) : 'transparent'"> <!-- ¡AÑADE EL '!' AQUÍ! -->
+            <ng-container *ngIf="isNumber(entry[month])">
+              {{ formatCurrency(entry[month]!) }} <!-- ¡AÑADE EL '!' AQUÍ! -->
+            </ng-container>
+            <ng-container *ngIf="!isNumber(entry[month])">
+              {{ entry[month] }}
+            </ng-container>
+          </td>
+          <td [style.background-color]="isNumber(entry['Total']) ? getHeatmapColor(entry['Total']!) : 'transparent'"> <!-- ¡AÑADE EL '!' AQUÍ! -->
+            <ng-container *ngIf="isNumber(entry['Total'])">
+              {{ formatCurrency(entry['Total']!) }} <!-- ¡AÑADE EL '!' AQUÍ! -->
+            </ng-container>
+            <ng-container *ngIf="!isNumber(entry['Total'])">
+              {{ entry['Total'] }}
+            </ng-container>
+          </td>
+          <td [class]="getVariationClass(entry['Var'])">{{ formatPercentage(entry['Var']) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

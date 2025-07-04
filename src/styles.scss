@@ -1,0 +1,256 @@
+/* src/styles.scss */
+
+/* You can add global styles to this file, and also import other style files */
+
+/* ==========================================================================
+   Font Imports
+   ========================================================================== */
+
+/* Asegúrate de que estas importaciones sean correctas y necesarias.
+   Si ya están en tu index.html o un archivo de pre-carga, puedes eliminarlas de aquí
+   para evitar doble importación, aunque el navegador suele manejarlas bien.
+*/
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+/* --- Variables CSS (Custom Properties) para la paleta de colores y layout --- */
+:root {
+  /* Layout Variables */
+  --header-height: 80px; /* Altura para el margen superior / futuro header */
+  --card-spacing: 25px; /* Renombrado para ser más general, es el espacio entre tarjetas/elementos */
+
+  /* Colores de Texto */
+  --color-text-dark: #191919;
+  --color-text-medium: #9f9f9f;
+
+  /* Colores de Estado (Semáforo) - ACTUALIZADO con variantes claras */
+  --color-status-error: #ee201c;
+  --color-status-error-light: #ffe6e6; /* Rojo muy claro para el fondo del chip */
+  --color-status-warning: #dfa510;
+  --color-status-warning-light: #fff8e6; /* Amarillo muy claro (ejemplo, si lo necesitas) */
+  --color-status-success: #1a932e;
+  --color-status-success-light: #e6ffe6; /* Verde muy claro para el fondo del chip */
+
+  /* Colores de Fondo/Detalle (claro) */
+  --color-background-light-1: #e9ecee; /* Color claro para fondo general (según tu última definición) */
+  --color-background-light-2: #f9efd4; /* Color claro para elementos/tarjetas suaves (según tu última definición) */
+
+  /* Colores de Detalle/Acento */
+  --color-accent: #35f7a5;
+
+  /* Colores de Gráficos (Escala de Grises/Azules Oscuros) */
+  --color-chart-gray-1: #e6e8ec;
+  --color-chart-gray-2: #ccd1d9;
+  --color-chart-gray-3: #b3b9c7;
+  --color-chart-gray-4: #9aa2b4;
+  --color-chart-gray-5: #808ba1;
+  --color-chart-gray-6: #67748e;
+  --color-chart-gray-7: #4e5d7b;
+  --color-chart-gray-8: #354569;
+  --color-chart-gray-9: #1b2e56;
+  --color-chart-gray-10: #021743; /* Sidebar color, por ejemplo */
+
+  /* Segunda Paleta (Violeta) */
+  --color-palette-violet-1: #f0eefc;
+  --color-palette-violet-2: #e1ddf9;
+  --color-palette-violet-3: #d3ccf7;
+  --color-palette-violet-4: #c4bbf4;
+  --color-palette-violet-5: #b5abf1;
+  --color-palette-violet-6: #a69aee;
+  --color-palette-violet-7: #9789eb;
+  --color-palette-violet-8: #8978e9; /* Para enlaces, etc. */
+  --color-palette-violet-9: #7a67e6;
+  --color-palette-violet-10: #6b56e3;
+
+  /* Variables para fuentes */
+  --font-family-primary: "Inter", sans-serif;
+  --font-family-sidebar: "Poppins", sans-serif;
+}
+
+/* --- Global Styles --- */
+/* Reset básico para asegurar consistencia del modelo de caja */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Aplicación de fuente principal y colores globales al cuerpo */
+body {
+  font-family: var(--font-family-primary); /* Inter para todo por defecto */
+  color: var(--color-text-dark);
+  background-color: var(
+    --color-background-light-1
+  ); /* Fondo general de la aplicación */
+  margin: 0; /* No es necesario !important, el reset ya debería manejarlo */
+  overflow-x: hidden; /* Ocultar desbordamiento horizontal si no hay necesidad de scroll */
+  /* Considera si 'overflow: hidden;' es realmente lo que quieres para el body.
+     Si tu contenido va a ser más largo que la altura de la ventana, te impedirá hacer scroll vertical.
+     Quizás 'overflow-x: hidden;' es más seguro para evitar scroll horizontal no deseado.
+  */
+}
+
+/* --- Especificar fuentes para elementos --- */
+
+/* Sidebar */
+/* Asegúrate de que tu elemento sidebar tenga esta clase */
+.sidebar {
+  font-family: var(--font-family-sidebar); /* Poppins para el sidebar */
+  // Aquí podrías aplicar también el color de fondo oscuro que mostraste en las imágenes
+  background-color: var(
+    --color-chart-gray-10
+  ); /* Ejemplo de un color oscuro de tu paleta */
+  color: #ffffff; /* Color de texto para el sidebar */
+}
+
+/* El resto de los elementos (encabezados, párrafos, botones, etc.) heredarán "Inter"
+   del body por defecto. Si quieres ser más explícito o sobreescribir, hazlo aquí. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-primary); /* Encabezados con Inter */
+  color: var(--color-text-dark);
+}
+
+a {
+  color: var(
+    --color-palette-violet-8
+  ); /* Ejemplo de uso de color violeta para enlaces */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: var(
+    --font-family-primary
+  ); /* Asegura que los controles de formulario también usen Inter */
+}
+
+/* --- Tus estilos de layout principales (adaptados a las variables) --- */
+/* Si estas reglas ya están en app.component.scss, es mejor moverlas allí
+   para mantener la modularidad, pero las incluyo aquí como referencia global */
+
+.main-layout-wrapper {
+  display: flex;
+  min-height: 100vh; /* Asegura que el layout ocupe al menos toda la altura de la ventana */
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: var(
+    --card-spacing
+  ); /* Aplica el padding general a la sección de contenido principal */
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-spacing); /* Espacio entre las tarjetas principales */
+  background-color: var(
+    --color-background-light-1
+  ); /* Fondo del contenido principal */
+}
+
+.top-margin-placeholder {
+  height: var(
+    --header-height
+  ); /* Usa la variable de altura para el placeholder */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-medium);
+  font-style: italic;
+  // background-color: rgba(0, 0, 0, 0.02); /* Para visualizar el placeholder si es necesario */
+}
+
+.actual-content-area {
+  flex-grow: 1;
+  background-color: transparent;
+  border-radius: 12px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(
+    --card-spacing
+  ); /* Espacio entre la tarjeta KPI y la tarjeta del gráfico/tabla */
+}
+
+.my-custom-tooltip-style {
+  background-color: white; /* <-- ¡Fondo blanco para todo el tooltip! */
+  color: var(--color-text-dark); /* Color de texto que ya tenías */
+
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500; /* Un poco más gruesa, puedes probar con 600 */
+  padding: 12px 18px; /* <-- Padding ajustado (puedes probar con 15px 20px si quieres más espacio) */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  max-width: 250px;
+
+  /* Aseguramos que el contenido interno no tenga padding extra */
+  .tooltip-inner {
+    background-color: inherit;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Para la flecha - ¡Ahora coincidirá con el fondo blanco del tooltip! */
+  /* Los bordes de la flecha que NO son el "relleno" deben ser transparentes. */
+  &.bs-tooltip-auto[x-placement^="top"] .arrow::before,
+  &.bs-tooltip-top .arrow::before {
+    border-top-color: white; /* La flecha de arriba es blanca */
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+  }
+  &.bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
+  &.bs-tooltip-bottom .arrow::before {
+    border-bottom-color: white; /* La flecha de abajo es blanca */
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-top-color: transparent;
+  }
+  &.bs-tooltip-auto[x-placement^="left"] .arrow::before,
+  &.bs-tooltip-left .arrow::before {
+    border-left-color: white; /* La flecha de la izquierda es blanca */
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+  }
+  &.bs-tooltip-auto[x-placement^="right"] .arrow::before,
+  &.bs-tooltip-right .arrow::before {
+    border-right-color: white; /* La flecha de la derecha es blanca */
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
+/* Media Queries (Ejemplo) */
+@media (max-width: 768px) {
+  .main-layout-wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100% !important; /* Haz que el sidebar ocupe todo el ancho en móviles */
+    height: auto; /* O una altura fija para un sidebar colapsable */
+    position: relative; /* Elimina fixed positioning para que no tape contenido */
+  }
+
+  .main-content {
+    padding: var(--card-spacing) 15px; /* Ajusta el padding para móviles */
+  }
+}
+
+/* Importing Bootstrap SCSS file. */
+@import "bootstrap/scss/bootstrap";

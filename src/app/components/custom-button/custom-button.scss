@@ -1,0 +1,50 @@
+/* src/app/components/custom-button/custom-button.component.scss */
+
+button {
+  /* Estilos base del botón */
+  background-color: var(--color-background-light-2); /* Un fondo claro de tu paleta */
+  border: 1px solid var(--color-chart-gray-2); /* Un borde sutil */
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: var(--color-text-dark); /* Color de texto oscuro */
+  border-radius: 25px !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Sombra sutil */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra suave, sutil gris */
+  // Puedes ajustar la opacidad (0.05) y el desplazamiento (2px, 5px)
+  // para que se adapte mejor a tu gusto.
+}
+
+button:hover {
+  background-color: var(--color-chart-gray-1);
+  border-color: var(--color-chart-gray-3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligeramente más pronunciada al pasar el ratón */
+}
+
+/* Estilo para el botón activo/seleccionado */
+button.active {
+  background-color: var(--color-palette-violet-8); /* Un color de acento, ej. violeta */
+  border-color: var(--color-palette-violet-9);
+  border-radius: 25px !important;
+  color: #ffffff; /* Texto blanco para el botón activo */
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Sombra un poco más fuerte cuando está activo */
+}
+
+button.active:hover {
+  background-color: var(--color-palette-violet-9);
+  border-color: var(--color-palette-violet-10);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra activa más pronunciada al pasar el ratón */
+}
+
+
+/* Puedes añadir estilos adicionales para diferentes tipos de botones
+   si no quieres que todos se vean iguales (ej. primary, secondary, danger)
+   simplemente añadiendo más Inputs y clases CSS.
+*/

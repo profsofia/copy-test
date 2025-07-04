@@ -1,0 +1,103 @@
+/* src/app/app.component.scss */
+
+/* Nuevo contenedor principal para el layout usando CSS Grid */
+.main-layout-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* Sidebar 25%, Main Content 75% */
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Estilos para el Sidebar (Navbar) */
+.sidebar {
+  background-color: #2c3e50;
+  z-index: 1000;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    color: white;
+    // Si quieres el texto del Navbar SIN padding ni margin, déjalos en 0
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 1.2em;
+  }
+}
+
+/* Estilos para el Contenido Principal */
+.main-content {
+  box-sizing: border-box;
+  overflow-y: auto; /* Permite el scroll solo en el contenido principal si es muy largo */
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* CLAVE: Elimina todo el padding del main-content para que sus hijos se peguen a los bordes */
+}
+
+/* Estilos para el placeholder del Margen Superior / Futuro Header */
+.top-margin-placeholder {
+  height: var(--header-height);
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin: 0 0 var(--card-margin-bottom) 0; /* CERO en top, right, left. Margen inferior solo si quieres espacio con las tarjetas */
+  border: none; /* Elimina cualquier borde */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Mantener la sombra si la deseas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilos para el Área de Contenido Real */
+.actual-content-area {
+  flex-grow: 1;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 30px; /* Mantener este padding interno para el contenido de las tarjetas */
+  margin: 0; /* CERO en todos los márgenes */
+  border: none; /* Elimina cualquier borde */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Mantener la sombra si la deseas */
+}
+
+/* Media Queries para Responsividad (para dispositivos más pequeños) */
+@media (max-width: 768px) {
+  .main-layout-wrapper {
+    grid-template-columns: 1fr; /* Una sola columna: sidebar ocupa todo el ancho */
+    grid-template-rows: auto 1fr; /* Sidebar arriba (altura automática), contenido abajo (resto del espacio) */
+  }
+
+  .sidebar {
+    height: auto; /* El sidebar no ocupa toda la altura, solo lo necesario para su contenido */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra inferior */
+  }
+
+  .main-content {
+    padding: 0; /* Asegurarse de que el padding también sea 0 en pantallas pequeñas */
+  }
+
+  .top-margin-placeholder, .actual-content-area {
+    margin: 0; /* Asegurarse de que los márgenes también sean 0 en pantallas pequeñas */
+  }
+
+  .top-margin-placeholder {
+    margin-bottom: var(--card-margin-bottom); /* Mantener espacio con las tarjetas si aplica */
+  }
+}
+/* Media Queries para Responsividad (para dispositivos más pequeños) */
+@media (max-width: 768px) {
+  .main-layout-wrapper {
+    grid-template-columns: 1fr; /* Una sola columna: sidebar ocupa todo el ancho */
+    grid-template-rows: auto 1fr; /* Sidebar arriba (altura automática), contenido abajo (resto del espacio) */
+  }
+
+  .sidebar {
+    height: auto; /* El sidebar no ocupa toda la altura, solo lo necesario para su contenido */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra inferior */
+  }
+
+  .main-content {
+    padding-top: var(--content-padding); /* Mantener padding superior */
+    padding-bottom: var(--content-padding); /* Mantener padding inferior */
+  }
+}

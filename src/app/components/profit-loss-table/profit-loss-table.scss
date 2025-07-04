@@ -1,0 +1,236 @@
+/* src/app/components/profit-loss-table/profit-loss-table.component.scss */
+
+.profit-loss-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.profit-loss-header {
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--color-chart-gray-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+}
+
+.profit-loss-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.profit-loss-controls {
+  display: flex;
+  gap: 10px; /* Espacio entre el selector de año y el botón de vista */
+  align-items: center;
+}
+
+/* --- ESTILOS PARA EL BOTÓN DESPLEGABLE DEL AÑO --- */
+/* Esta es la definición correcta y única para el botón del año */
+.profit-loss-year-selector-button {
+  background-color: transparent;
+  border: 1px solid var(--color-chart-gray-2);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: 0.85em;
+  color: var(--color-text-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  fa-icon {
+    margin-left: 8px;
+    font-size: 0.8em;
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+  }
+}
+
+.profit-loss-year-selector-button:hover {
+  background-color: var(--color-chart-gray-1);
+  border-color: var(--color-chart-gray-3);
+}
+
+.profit-loss-year-selector-button.active {
+  background-color: var(--color-palette-violet-8);
+  border-color: var(--color-palette-violet-9);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.profit-loss-year-selector-button.active:hover {
+  background-color: var(--color-palette-violet-9);
+  border-color: var(--color-palette-violet-10);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profit-loss-year-selector-button fa-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.profit-loss-year-selector-button.dropdown-toggle::after {
+  display: none !important;
+}
+
+/* --- ESTILOS PARA EL BOTÓN DE ALTERNAR VISTA CON IMAGEN --- */
+/* Esta es la definición correcta y única para el botón de imagen */
+.view-toggle-button-img {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 6px; /* Añadido para consistencia con el botón del año */
+
+  img {
+    height: 20px;
+    width: 20px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+}
+
+.view-toggle-button-img:hover {
+  background-color: var(--color-chart-gray-1);
+  img {
+    opacity: 1;
+  }
+}
+
+.view-toggle-button-img.active {
+  background-color: var(--color-palette-violet-8);
+  border: 1px solid var(--color-palette-violet-9);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+
+  img {
+    opacity: 1;
+  }
+}
+
+.view-toggle-button-img.active:hover {
+  background-color: var(--color-palette-violet-9);
+  border-color: var(--color-palette-violet-10);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* --- ESTILOS DE LA TABLA --- */
+.profit-loss-table-container {
+  overflow-x: auto;
+  padding: 20px 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  text-align: left;
+  border: 1px solid var(--color-chart-gray-1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 8px 8px;
+  border-bottom: 1px solid var(--color-chart-gray-1);
+  vertical-align: middle;
+}
+
+thead {
+  th {
+    background-color: #ffffff;
+    color: var(--color-text-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    white-space: nowrap;
+  }
+}
+
+tbody {
+  tr:hover {
+    background-color: var(--color-background-light-1);
+  }
+
+  td {
+    color: var(--color-text-dark);
+    font-weight: 400;
+    white-space: nowrap;
+    font-size: 0.9em;
+  }
+
+  td:first-child {
+    font-weight: 600;
+    color: var(--color-text-dark);
+  }
+
+  td:nth-last-child(2) {
+    font-weight: 600;
+    color: var(--color-text-dark);
+  }
+  td:last-child {
+    font-weight: 600;
+  }
+
+  .highlighted-row {
+    background-color: var(--color-palette-violet-1);
+  }
+  .highlighted-row:hover {
+    background-color: var(--color-palette-violet-2);
+  }
+}
+
+.positive-variation {
+  color: var(--color-status-success);
+  font-weight: 600;
+}
+
+.negative-variation {
+  color: var(--color-status-error);
+  font-weight: 600;
+}
+
+/* --- Estilos específicos para la tabla de mapa de calor --- */
+.heatmap-table {
+  td {
+    transition: background-color 0.5s ease;
+    color: var(--color-text-dark);
+  }
+  .highlighted-row {
+    background-color: transparent !important;
+  }
+  .highlighted-row:hover {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+  }
+}
+
+/* Media Queries para la tabla */
+@media (max-width: 768px) {
+  .profit-loss-table-container {
+    padding: 10px;
+  }
+  th, td {
+    padding: 6px 6px;
+  }
+  thead th {
+    font-size: 0.7em;
+  }
+  tbody td {
+    font-size: 0.8em;
+  }
+}

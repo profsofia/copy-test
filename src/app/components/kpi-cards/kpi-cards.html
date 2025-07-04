@@ -1,0 +1,39 @@
+<h2 class="kpi-section-title">Key Metrics</h2>
+<div class="kpi-cards-grid">
+  <div class="kpi-card" *ngFor="let kpi of kpis">
+    <div class="kpi-header">
+      <span class="kpi-title">{{ kpi.title }}</span>
+    </div>
+    <div class="kpi-value-container">
+      <span class="kpi-value">{{ kpi.value }}</span>
+    </div>
+    <div class="kpi-footer">
+      <span
+        class="info-icon-wrapper"
+        style="display: inline-block; cursor: pointer; position: relative"
+      >
+        <fa-icon
+          [icon]="faInfoCircle"
+          class="info-icon"
+          [ngbTooltip]="kpi.description"
+          placement="bottom"
+          container="body"
+          tooltipClass="my-custom-tooltip-style"
+        ></fa-icon>
+      </span>
+      <span
+        class="kpi-change-chip"
+        [class.positive]="kpi.icon === 'up'"
+        [class.negative]="kpi.icon === 'down'"
+      >
+        <fa-icon
+          [icon]="kpi.icon === 'up' ? faArrowTrendUp : faArrowTrendDown"
+          class="trend-icon"
+        ></fa-icon>
+        <span class="kpi-change"
+          >{{ kpi.change | number : "1.2-2" }}{{ kpi.unit }}</span
+        >
+      </span>
+    </div>
+  </div>
+</div>
