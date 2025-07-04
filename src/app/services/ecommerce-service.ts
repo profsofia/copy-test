@@ -1,7 +1,7 @@
 // src/app/services/ecommerce-service.ts
 import { Injectable } from '@angular/core';
 
-// Interfaces existentes
+// Interfaces existentes (sin cambios)
 export interface KeyMetrics {
   net_revenue: number;
   aov: number;
@@ -11,7 +11,7 @@ export interface KeyMetrics {
 }
 
 export interface Order {
-  date: string;
+  date: string; // Asumimos que esta fecha viene en formato 'YYYY-MM-DD' o similar, que Date() pueda parsear
   net_revenue: number;
   aov: number;
   taxes: number;
@@ -88,38 +88,50 @@ export class EcommerceService {
     return this.dashboardData;
   }
 
-  // ¡NUEVO MÉTODO PARA FILTRAR Y AGREGAR DATOS POR PERÍODO!
+  /**
+   * Filtra y agrega datos de órdenes por período (día, semana, mes).
+   * Ahora devuelve un array de objetos Date para las etiquetas, permitiendo a Chart.js manejar el formateo.
+   * @param period El período de agregación ('day', 'week', 'month').
+   * @param metric La métrica a agregar (ej. 'net_revenue').
+   * @param allOrders Todas las órdenes disponibles.
+   * @returns Un objeto con 'labels' (fechas como Date) y 'data' (valores agregados).
+   */
   getFilteredOrdersByPeriod(
     period: 'day' | 'week' | 'month',
     metric: keyof Order,
     allOrders: Order[]
-  ): { labels: string[], data: number[] } {
-    const aggregatedData: { [key: string]: { sum: number, count: number } } = {};
+  ): { labels: Date[], data: number[] } { // <--- ¡CAMBIO CLAVE AQUÍ! labels ahora es Date[]
+    // Usamos un objeto para agregar datos, donde la clave es una representación única del período
+    // y el valor contiene la suma, el conteo y una referencia a un objeto Date para la etiqueta.
+    const aggregatedData: { [key: string]: { sum: number, count: number, dateRef?: Date } } = {};
     const isAverageMetric = ['aov', 'conversion_rate'].includes(metric as string);
 
     allOrders.forEach(order => {
-      const orderDate = new Date(order.date);
-      let key: string; // La clave para agrupar (ej. '2024-01-01', '2024-W1', '2024-01')
-      let label: string; // La etiqueta para mostrar en el gráfico
+      const orderDate = new Date(order.date); // Convertir la fecha de la orden a objeto Date
+      let key: string; // Clave para agrupar (ej. '2024-01-01', '2024-W1', '2024-01')
+      let dateForLabel: Date; // El objeto Date real que se usará como etiqueta
 
       if (period === 'day') {
-        key = order.date;
-        label = new Date(order.date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+        // Para el período 'day', la clave es la fecha ISO string y la etiqueta es el objeto Date de la orden
+        key = order.date; // Ej: "2024-01-01"
+        dateForLabel = orderDate;
       } else if (period === 'week') {
-        // Calcular el número de semana (simplificado, puede requerir una librería para mayor precisión)
-        const startOfWeek = new Date(orderDate);
-        startOfWeek.setDate(orderDate.getDate() - orderDate.getDay()); // Domingo como inicio de semana
+        // Para el período 'week', calculamos el inicio de la semana y usamos eso para la clave y la etiqueta
+        const startOfWeek = this.getStartOfWeek(orderDate); // Obtiene el objeto Date del inicio de la semana
         key = `${startOfWeek.getFullYear()}-W${this.getWeekNumber(startOfWeek)}`;
-        label = `Semana ${this.getWeekNumber(startOfWeek)}`;
+        dateForLabel = startOfWeek;
       } else { // month
-        key = `${orderDate.getFullYear()}-${orderDate.getMonth()}`;
-        label = orderDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long' });
+        // Para el período 'month', la clave es 'YYYY-MM' y la etiqueta es el primer día del mes
+        key = `${orderDate.getFullYear()}-${orderDate.getMonth()}`; // Month es 0-indexado
+        dateForLabel = new Date(orderDate.getFullYear(), orderDate.getMonth(), 1); // Primer día del mes
       }
 
+      // Inicializar el objeto de agregación si no existe
       if (!aggregatedData[key]) {
-        aggregatedData[key] = { sum: 0, count: 0 };
+        aggregatedData[key] = { sum: 0, count: 0, dateRef: dateForLabel }; // Almacenar la referencia Date
       }
 
+      // Sumar el valor de la métrica
       const value = order[metric];
       if (typeof value === 'number') {
         aggregatedData[key].sum += value;
@@ -146,39 +158,56 @@ export class EcommerceService {
       }
     });
 
-
-    const labels: string[] = [];
+    const labels: Date[] = []; // <--- ¡labels ahora es un array de Date!
     const data: number[] = [];
 
     sortedKeys.forEach(key => {
       const agg = aggregatedData[key];
-      labels.push(this.formatKeyAsLabel(key, period)); // Usa un helper para formatear la etiqueta final
+      if (agg.dateRef) {
+        labels.push(agg.dateRef); // Añadir el objeto Date almacenado
+      }
       data.push(isAverageMetric ? (agg.sum / agg.count) : agg.sum);
     });
 
     return { labels, data };
   }
 
-  // Helper para calcular el número de semana (ISO week date, simplificado)
+  /**
+   * Helper para calcular el número de semana (ISO week date, simplificado).
+   * Asegura que la fecha se trate como UTC para consistencia.
+   * @param d La fecha para la cual calcular el número de semana.
+   * @returns El número de semana.
+   */
   private getWeekNumber(d: Date): number {
+    // Copiar la fecha para no modificar el original
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    // Establecer al jueves más cercano: fecha actual + 4 - número de día actual
+    // Hacer que el número de día del domingo sea 7
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    // Obtener el primer día del año
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    // Calcular semanas completas hasta el jueves más cercano
     const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
     return weekNo;
   }
 
-  // Helper para formatear la clave de agrupación como una etiqueta legible
-  private formatKeyAsLabel(key: string, period: 'day' | 'week' | 'month'): string {
-    if (period === 'day') {
-      return new Date(key).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
-    } else if (period === 'week') {
-      const [year, weekNum] = key.split('-W');
-      return `Semana ${weekNum}, ${year}`;
-    } else { // month
-      const [year, monthNum] = key.split('-');
-      const date = new Date(Number(year), Number(monthNum));
-      return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long' });
-    }
+  /**
+   * Helper para obtener el inicio de la semana (Domingo) para una fecha dada.
+   * @param d La fecha de referencia.
+   * @returns Un objeto Date representando el inicio de la semana.
+   */
+  private getStartOfWeek(d: Date): Date {
+    const date = new Date(d);
+    const day = date.getDay(); // 0 para Domingo, 1 para Lunes, etc.
+    const diff = date.getDate() - day; // Ajustar al Domingo
+    date.setDate(diff);
+    date.setHours(0, 0, 0, 0); // Establecer al inicio del día
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
   }
+
+  // Se elimina la función formatKeyAsLabel ya que el formateo se hará en ChartSalesComponent
+  // private formatKeyAsLabel(key: string, period: 'day' | 'week' | 'month'): string { /* ... */ }
 }
