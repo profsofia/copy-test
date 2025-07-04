@@ -61,21 +61,7 @@ export class ChartSalesComponent implements OnInit {
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(142, 94, 162, 0.8)',
       }
-      // ¡ELIMINADO! El dataset de la línea de "Media"
-      /*
-      ,
-      {
-        data: [],
-        label: 'Media',
-        fill: false,
-        pointRadius: 0,
-        borderColor: '#3cba9f',
-        borderDash: [5, 5],
-        borderWidth: 2,
-        pointHitRadius: 0,
-        hoverBorderWidth: 0,
-      }
-      */
+
     ],
     labels: []
   };
@@ -143,8 +129,16 @@ export class ChartSalesComponent implements OnInit {
           color: 'rgba(0,0,0,0.05)'
         },
         ticks: {
-          callback: (value) => {
-            return this.getFormattedValue(value as number, this.selectedMetric);
+          callback: (value: number | string) => {
+            const numValue = typeof value === 'string' ? parseFloat(value) : value;
+
+            if (numValue >= 1000000) {
+              return (numValue / 1000000).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + 'M';
+            }
+            if (numValue >= 1000) {
+              return (numValue / 1000).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + 'K';
+            }
+            return numValue.toLocaleString('es-AR', { maximumFractionDigits: 0 }); // Para números menores a 1000, sin decimales
           },
           color: '#666'
         }
@@ -187,16 +181,11 @@ export class ChartSalesComponent implements OnInit {
     const dates = filteredData.labels;
     const values = filteredData.data;
 
-    // Ya no necesitamos calcular la media ni el averageData, solo la línea principal
-    // const sum = values.reduce((a, b) => a + b, 0);
-    // const average = values.length > 0 ? sum / values.length : 0;
-    // const averageData = new Array(values.length).fill(average);
 
     this.lineChartData.labels = dates;
     this.lineChartData.datasets[0].data = values;
     this.lineChartData.datasets[0].label = this.selectedMetricLabel;
-    // ¡ELIMINADO! Ya no asignamos datos al segundo dataset
-    // this.lineChartData.datasets[1].data = averageData;
+
 
     this.chart?.update();
   }
