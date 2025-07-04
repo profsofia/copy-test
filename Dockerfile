@@ -17,21 +17,24 @@ RUN npm install
 COPY . .
 
 # Construye la aplicación Angular en modo producción.
-# Asegúrate de que 'tu-app' sea el nombre de tu proyecto Angular (normalmente el nombre de la carpeta raíz).
-# Si no usas 'base-href', puedes omitirlo.
-RUN npm run build --configuration production --output-path ./dist/tu-app
+# Por defecto, 'ng build' generará la salida en 'dist/copi-front'
+# (donde 'copi-front' es el nombre de tu proyecto).
+# No es necesario especificar '--output-path' aquí si ya está configurado en angular.json
+# o si confías en el comportamiento predeterminado.
+RUN npm run build -- --configuration production
 
 # --- Etapa de Servido (Serve Stage) ---
 # Usa una imagen ligera de Nginx para servir la aplicación estática.
 FROM nginx:alpine
 
-# Copia la configuración de Nginx (crearemos este archivo en el siguiente paso).
-# Si no necesitas una configuración personalizada, puedes omitir esto y Nginx usará la configuración por defecto.
+# Copia la configuración de Nginx. Asegúrate de tener un archivo 'nginx.conf'
+# en la raíz de tu proyecto.
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copia los archivos estáticos construidos desde la etapa de construcción al directorio de Nginx.
-# Asegúrate de que 'tu-app' coincida con el nombre que usaste en la etapa de construcción.
-COPY --from=build /app/dist/tu-app /usr/share/nginx/html
+# Asegúrate de que 'copi-front' coincida con el nombre de tu proyecto Angular,
+# ya que 'ng build' lo usará para crear la subcarpeta dentro de 'dist/'.
+COPY --from=build /app/dist/copi-front /usr/share/nginx/html
 
 # Expone el puerto 80, que es el puerto por defecto que usa Nginx.
 EXPOSE 80
